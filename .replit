@@ -1,0 +1,51 @@
+modules = ["java"]
+
+[nix]
+channel = "stable-24_05"
+
+[workflows]
+runButton = "Project"
+
+[[workflows.workflow]]
+name = "Project"
+mode = "parallel"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "ReadingDiaryApp"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "java_reading_diary"
+
+[[workflows.workflow]]
+name = "ReadingDiaryApp"
+author = "agent"
+
+[workflows.workflow.metadata]
+agentRequireRestartOnSave = false
+
+[[workflows.workflow.tasks]]
+task = "packager.installForAll"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "javac -d ./target src/main/java/com/readingdiary/*.java && java -cp ./target com.readingdiary.ReadingDiary"
+
+[[workflows.workflow]]
+name = "java_reading_diary"
+author = "agent"
+
+[workflows.workflow.metadata]
+agentRequireRestartOnSave = false
+
+[[workflows.workflow.tasks]]
+task = "packager.installForAll"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "javac -d . src/main/java/com/readingdiary/*.java && java com.readingdiary.ReadingDiary"
+
+[deployment]
+run = ["sh", "-c", "javac -d ./target src/main/java/com/readingdiary/*.java && java -cp ./target com.readingdiary.ReadingDiary"]
